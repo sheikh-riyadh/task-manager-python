@@ -11,5 +11,8 @@ def manager_dashboard(req):
 
 
 def test(req):
-    return render(req, "test.html")
+    context={
+        "fruits":["Apple", "Mango", "Banana", "Orange", "Jacfruits"]
+    }
+    return render(req, "test.html", context)
 

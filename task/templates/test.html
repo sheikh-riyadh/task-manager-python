@@ -1,13 +1,21 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="{% static "css/output.css" %}">
-</head>
-<body>
-    <h1 class="bg-black text-white">Hello</h1>
-</body>
+  </head>
+  <body>
+    <div class="flex justify-center items-center h-screen">
+      {% for fruit in fruits %}
+            {% if not fruit == "Apple" %}
+                <h1 class="text-green-400 shadow-md p-2 m-2 rounded-md text-xl font-bold">
+                    {{fruit}}
+                </h1>
+            {% endif %}
+      {% endfor %}
+    </div>
+  </body>
 </html>
