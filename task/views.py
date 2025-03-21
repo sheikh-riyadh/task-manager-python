@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from task.forms import TaskModelForm
-# from task.models import Employee,Task
+from task.models import Task
 
 # Create your views here.
 def user_dashboard(req):
@@ -54,3 +54,6 @@ def create_task(req):
     return render(req, "dashboard/task_form.html", context)
 
 
+def show_tasks(req):
+    tasks = Task.objects.all()
+    return render(req, 'show_tasks.html',{"tasks":tasks})
