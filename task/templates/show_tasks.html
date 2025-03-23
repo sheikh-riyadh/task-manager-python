@@ -7,9 +7,12 @@
 </head>
 <body>
     <ul>
-        {% for task in tasks %}
+        {% for employee in tasks %}
             <li>
-                {{task.status}}
+                {{employee.name}}
+                {% for task in employee.task.all %}
+                <p>{{task.title}}</p>
+                {% endfor %}
             </li>
         {% endfor %}
     </ul>
