@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from task.forms import TaskModelForm
-# from task.models import Employee,Task
+from task.models import Task, TaskDetail, Project, Employee
 
 # Create your views here.
 def user_dashboard(req):
@@ -54,3 +54,67 @@ def create_task(req):
     return render(req, "dashboard/task_form.html", context)
 
 
+def show_tasks(req):
+    # Ways of data retriving
+    # ======================
+    """
+    1. data = Task.objects.all() {Get all the data from Task model}
+    2. data = Task.objects.get(id=1) {Get the data with specific id}
+    3. data = Task.objects.first() {Get the first data from Task model}
+    4. data = Task.objects.get(title="demo title") {We can search with any field name which is available on models}
+
+    """
+    # tasks = Task.objects.all()
+
+
+    # We can get the data with condition
+    # ====================================
+
+    """
+    1. data = Task.objects.filter(status="PENDING") {We can filter the data with any field name which is are available in the model}
+    2. data = Task.objects.exclude(status="IN_PROGRESS") {Get all the data without IN_PROGRESS}
+    3. data = Task.objects.filter(status="CANCEL").exist() {Here we can get Boolean value if exist return True otherwise False}
+    4. data = Task.objects.filter(t)
+
+    """
+
+    pending_tasks_data = Task.objects.filter(status="PENDING")
+
+
+
+    # Now we will learn "select_related"
+    # =================================
+
+    """
+    select_related to help optimize the query for "ForegingKey" and "OneToOneField"
+
+    example
+    =======
+    1. tasks = Task.objects.select_related("details") {We can get the all the tasks with details optimize ways}
+
+    2. task_details = TaskDetail.objects.select_related("task") {We can get task throw the TaskDetail because of reverse relation (Remember reverse relation work only OneToOneField if we use "select_related")}
+    
+    """
+
+    tasks = Task.objects.select_related("details").all() #{We can access tasks details throw the tasks}
+    tasks = TaskDetail.objects.select_related("task").all() #{We can access tasks throw the task details}
+    tasks = Task.objects.select_related('project').all()
+    tasks = Project.objects.prefetch_related("tasks").all()
+    
+
+    # We are going to use prefetch_related
+    # ====================================
+
+    """
+    prefetch_related to help optimize the query for "reverse ForegingKey" and "ManyToManyField"
+
+    1. tasks = Task.objects.prefetch_related("assigned_to").all() {We can see how many employee work on this task throw the Task model}
+
+    """
+
+    tasks = Task.objects.prefetch_related("assigned_to").all()
+    tasks = Employee.objects.prefetch_related("task").all()
+
+
+
+    return render(req, 'show_tasks.html',{"tasks":tasks, "pending_tasks":pending_tasks_data})
