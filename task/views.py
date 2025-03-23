@@ -55,5 +55,32 @@ def create_task(req):
 
 
 def show_tasks(req):
+    # Ways of data retriving
+    # ======================
+    """
+    1. data = Task.objects.all() {Get all the data from Task model}
+    2. data = Task.objects.get(id=1) {Get the data with specific id}
+    3. data = Task.objects.first() {Get the first data from Task model}
+    4. data = Task.objects.get(title="demo title") {We can search with any field name which is available on models}
+
+    """
     tasks = Task.objects.all()
-    return render(req, 'show_tasks.html',{"tasks":tasks})
+
+
+    # We can get the data with condition
+    # ====================================
+
+    """
+    1. data = Task.objects.filter(status="PENDING") {We can filter the data with any field name which is are available in the model}
+    2. data = Task.objects.exclude(status="IN_PROGRESS") {Get all the data without IN_PROGRESS}
+    3. data = Task.objects.filter(status="CANCEL").exist() {Here we can get Boolean value if exist return True otherwise False}
+    4. data = Task.objects.filter(t)
+
+    
+    """
+
+    pending_tasks_data = Task.objects.filter(status="PENDING")
+
+
+
+    return render(req, 'show_tasks.html',{"tasks":tasks, "pending_tasks":pending_tasks_data})

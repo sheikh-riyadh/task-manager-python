@@ -9,10 +9,22 @@
     <ul>
         {% for task in tasks %}
             <li>
-                {{task.status}}
+                {{task.title}}
             </li>
         {% endfor %}
     </ul>
     
+
+    <ul>
+        {% for pending_task in pending_tasks %}
+        <li>
+            {{pending_task.status}}
+        </li>
+        {% endfor %}
+    </ul>
+
+
+
+
 </body>
 </html>
