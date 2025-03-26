@@ -20,7 +20,7 @@ def manager_dashboard(req):
 
 def user_dashboard(req):
     
-    return render(req, "dashboard/user-dashboard.html", context)
+    return render(req, "dashboard/user-dashboard.html")
 
 
 def test(req):
