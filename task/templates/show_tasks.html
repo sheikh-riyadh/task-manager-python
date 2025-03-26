@@ -10,9 +10,7 @@
         {% for employee in tasks %}
             <li>
                 {{employee.name}}
-                {% for task in employee.task.all %}
-                <p>{{task.title}}</p>
-                {% endfor %}
+                {{employee.completed_tasks}}
             </li>
         {% endfor %}
     </ul>
