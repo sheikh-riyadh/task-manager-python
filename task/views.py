@@ -2,14 +2,25 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from task.forms import TaskModelForm
 from task.models import Task, TaskDetail, Project, Employee
+from django.db.models import Q, Count
 
 # Create your views here.
-def user_dashboard(req):
-    return render(req, "dashboard/manager-dashboard.html")
-
-
 def manager_dashboard(req):
-    return render(req, "dashboard/user-dashboard.html")
+    tasks = Task.objects.all()
+    context ={
+        "tasks": tasks,
+        "total_task": tasks.count(),
+        "pending_task": tasks.filter(status="PENDING").count(),
+        "in_progress": tasks.filter(status="IN_PROGRESS").count(),
+        "completed_task": tasks.filter(status="COMPLETED").count()
+
+    }
+    return render(req, "dashboard/manager-dashboard.html",context)
+
+
+def user_dashboard(req):
+    
+    return render(req, "dashboard/user-dashboard.html", context)
 
 
 def test(req):
@@ -114,6 +125,8 @@ def show_tasks(req):
 
     tasks = Task.objects.prefetch_related("assigned_to").all()
     tasks = Employee.objects.prefetch_related("task").all()
+    tasks = Project.objects.prefetch_related("task").all()
+    tasks= Employee.objects.annotate(completed_tasks=Count("task", filter=Q(task__is_completed=True)))
 
 
 
