@@ -12,11 +12,21 @@
       <section class="h-screen flex items-center justify-center">
         <div class="w-1/2 shadow-lg p-5 rounded-lg">
           <div>
-            <p>{% if message %} {{message}} {% endif %}</p>
+            <p>{% if messages %} 
+                  {% for message in messages  %}
+                    <p class="{% if message.tags == 'success' %}
+                    bg-green-600 text-white font-bold
+                    {% endif %}">
+                      {{message}}
+                    </p>
+                  {% endfor %}
+              {% endif %}</p>
           </div>
           <form method="POST" class="flex flex-col gap-5 w-full ">
-            {% csrf_token %} {{form.as_p}}
-            <button class="bg-green-500 text-white px-5 py-1 rounded">Submit</button>
+            {% csrf_token %} 
+            {{task_form.as_p}}
+            {{task_detail_form.as_p}}
+            <button type="submit" class="bg-green-500 text-white px-5 py-1 rounded">Submit</button>
           </form>
         </div>
       </section>

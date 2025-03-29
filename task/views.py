@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from task.forms import TaskModelForm
+from task.forms import TaskModelForm,TaskDetailModelForm
 from task.models import Task, TaskDetail, Project, Employee
 from django.db.models import Q, Count
+from django.contrib import messages
+
 
 # Create your views here.
 def manager_dashboard(req):
@@ -55,37 +57,32 @@ def test(req):
     return render(req, "test.html", context)
 
 
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import TaskModelForm, TaskDetailModelForm
+
 def create_task(req):
-    # employees = Employee.objects.all()
-    form = TaskModelForm()
+    task_form = TaskModelForm()
+    task_detail_form = TaskDetailModelForm()
 
     if req.method == "POST":
-        form = TaskModelForm(req.POST)
-        if form.is_valid():
-            form.save()
+        task_form = TaskModelForm(req.POST)
+        task_detail_form = TaskDetailModelForm(req.POST)
 
+        if task_form.is_valid() and task_detail_form.is_valid():  # Ensure both forms are valid
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)  # Don't save yet
+            task_detail.task = task  # Assign the related task
+            task_detail.save()  # Now save
 
-            return render(req, "dashboard/task_form.html", {"form":form, "message": "task added successfully"})
-        
+            messages.success(req, "Created task successfully")
+            return redirect("create-task")
+        else:
+            messages.error(req, "There was an error in the form. Please check your inputs.")
 
-            # data = form.cleaned_data
-            # title = data.get("title")
-            # description = data.get("description")
-            # due_date = data.get("due_date")
-            # assigned_to = data.get("assigned_to")
-
-            # task = Task.objects.create(title=title, description=description, due_date=due_date)
-
-            # for employee_id in assigned_to:
-            #     employee = Employee.objects.get(id=employee_id)
-            #     task.assigned_to.add(employee)
-            
-            # return HttpResponse("Task added successfully.")
-
-    
-
-    context={
-        "form": form
+    context = {
+        "task_form": task_form,
+        "task_detail_form": task_detail_form
     }
     return render(req, "dashboard/task_form.html", context)
 

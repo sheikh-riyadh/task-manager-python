@@ -1,5 +1,5 @@
 from django import forms
-from task.models import Task
+from task.models import Task,TaskDetail
 
 
 
@@ -52,7 +52,7 @@ class TaskModelForm(StyleFormMixin, forms.ModelForm):
         fields = ['title', 'description', 'due_date', 'assigned_to']
         widgets = {
             'due_date': forms.SelectDateWidget,
-            'assigned_to': forms.Select
+            'assigned_to': forms.SelectMultiple
         }
 
         # """ If we want to remove field we can use exclude """
@@ -81,3 +81,15 @@ class TaskModelForm(StyleFormMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.apply_style_widget()
+
+
+
+class TaskDetailModelForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = TaskDetail
+        fields = ["priority", "notes"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_style_widget()
+
