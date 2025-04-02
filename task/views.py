@@ -57,10 +57,6 @@ def test(req):
     return render(req, "test.html", context)
 
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import TaskModelForm, TaskDetailModelForm
-
 def create_task(req):
     task_form = TaskModelForm()
     task_detail_form = TaskDetailModelForm()

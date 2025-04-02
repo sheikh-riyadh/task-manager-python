@@ -14,11 +14,11 @@
           <div>
             <p>{% if messages %} 
                   {% for message in messages  %}
-                    <p class="{% if message.tags == 'success' %}
-                    bg-green-600 text-white font-bold
+                    <span class="
+                    {% if message.tags == 'success' %}  bg-green-600 text-white font-bold block
                     {% endif %}">
                       {{message}}
-                    </p>
+                    </span>
                   {% endfor %}
               {% endif %}</p>
           </div>
