@@ -56,7 +56,7 @@ def test(req):
     }
     return render(req, "test.html", context)
 
-
+# Create a new task
 def create_task(req):
     task_form = TaskModelForm()
     task_detail_form = TaskDetailModelForm()
@@ -73,6 +73,37 @@ def create_task(req):
 
             messages.success(req, "Created task successfully")
             return redirect("create-task")
+        else:
+            messages.error(req, "There was an error in the form. Please check your inputs.")
+
+    context = {
+        "task_form": task_form,
+        "task_detail_form": task_detail_form
+    }
+    return render(req, "dashboard/task_form.html", context)
+
+# Update task which is user want
+def update_task(req,id):
+    task = Task.objects.get(id=id)
+    task_form = TaskModelForm(instance=task)
+    task_detail_form = TaskDetailModelForm()
+
+    if task.details:
+        task_detail_form = TaskDetailModelForm(instance=task.details)
+
+
+    if req.method == "POST":
+        task_form = TaskModelForm(req.POST, instance = task)
+        task_detail_form = TaskDetailModelForm(req.POST, instance=task.details)
+
+        if task_form.is_valid() and task_detail_form.is_valid():  # Ensure both forms are valid
+            task = task_form.save()
+            task_detail = task_detail_form.save(commit=False)  # Don't save yet
+            task_detail.task = task  # Assign the related task
+            task_detail.save()  # Now save
+
+            messages.success(req, "Updated task successfully")
+            return redirect("manager-dashboard")
         else:
             messages.error(req, "There was an error in the form. Please check your inputs.")
 

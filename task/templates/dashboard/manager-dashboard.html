@@ -19,12 +19,18 @@
       <div class="flex items-center gap-2">
         <div class="w-2 h-2 rounded-full bg-green-500"></div>
         <span>
-            {% if task.title|length > 30 %}
-                <span title="{{ task.title }}">
-                  {{task.title|slice:"0:30"}}...
-                </span>
+            {% if task.title|length > 15 %}
+                <div class="flex gap-5">
+                  <span title="{{ task.title }}">
+                    {{task.title|slice:"0:15"}}...
+                  </span>
+                  <a class="block bg-rose-600 text-white p-2 rounded-md text-sm font-semibold" href="{% url 'update-task' task.id %}">Update</a>
+                </div>
             {% else %}
-                <span >{{ task.title }}</span>
+                <div class="flex gap-5">
+                  <span >{{ task.title }}</span>
+                  <a class="block bg-rose-600 text-white p-2 rounded-md text-sm font-semibold" href="{% url 'update-task' task.id %}">Update</a>
+                </div>
             {% endif %}
       </span>      
       </div>
