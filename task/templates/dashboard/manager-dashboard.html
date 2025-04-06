@@ -24,12 +24,20 @@
                   <span title="{{ task.title }}">
                     {{task.title|slice:"0:15"}}...
                   </span>
-                  <a class="block bg-rose-600 text-white p-2 rounded-md text-sm font-semibold" href="{% url 'update-task' task.id %}">Update</a>
+                  <a class="block bg-green-600 text-white p-2 rounded-md text-sm font-semibold" href="{% url 'update-task' task.id %}">Update</a>
+                  <form action="{% url 'delete-task' task.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="block bg-rose-600 text-white p-2 rounded-md text-sm font-semibold">Delete</button>
+                  </form>
                 </div>
             {% else %}
                 <div class="flex gap-5">
                   <span >{{ task.title }}</span>
-                  <a class="block bg-rose-600 text-white p-2 rounded-md text-sm font-semibold" href="{% url 'update-task' task.id %}">Update</a>
+                  <a class="block bg-green-600 text-white p-2 rounded-md text-sm font-semibold" href="{% url 'update-task' task.id %}">Update</a>
+                  <form action="{% url 'delete-task' task.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="block bg-rose-600 text-white p-2 rounded-md text-sm font-semibold">Delete</button>
+                  </form>
                 </div>
             {% endif %}
       </span>      

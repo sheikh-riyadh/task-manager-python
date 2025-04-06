@@ -86,7 +86,6 @@ def create_task(req):
 def update_task(req,id):
     task = Task.objects.get(id=id)
     task_form = TaskModelForm(instance=task)
-    task_detail_form = TaskDetailModelForm()
 
     if task.details:
         task_detail_form = TaskDetailModelForm(instance=task.details)
@@ -112,6 +111,19 @@ def update_task(req,id):
         "task_detail_form": task_detail_form
     }
     return render(req, "dashboard/task_form.html", context)
+
+
+def delete_task(req, id):
+    if req.method=="POST":
+        task = Task.objects.get(id=id)
+        print(task.title)
+        task.delete()
+        messages.success(req,"Deleted successfully..!")
+        return redirect("manager-dashboard")
+    else:
+        messages.error(req,"Something went wrong..!")
+        return redirect("manager-dashboard")
+
 
 
 def show_tasks(req):

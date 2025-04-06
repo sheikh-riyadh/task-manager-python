@@ -168,6 +168,26 @@
             </div>
           </a>
         </div>
+        <div>
+          <p>
+            {% if messages %} 
+              {% for message in messages %}
+                <span class="
+                  {% if message.tags == 'error' %} 
+                    bg-rose-600 text-white font-bold block
+                  {% elif message.tags == 'success' %} 
+                    bg-green-600 text-white font-bold block
+                  {% else %}
+                    bg-gray-300 text-black font-medium block
+                  {% endif %}
+                ">
+                  {{ message }}
+                </span>
+              {% endfor %}
+            {% endif %}
+          </p>
+        </div>
+        
 
         {% block card %}
         
