@@ -10,8 +10,8 @@
 <body>
 
     <div class="h-screen flex flex-col items-center justify-center">
-        <div class="w-3/4 h-96 shadow-lg border rounded-md p-5">
-            <form method="POST" class="h-full flex flex-col gap-5">
+        <div class="w-2/4 h-96 shadow-lg border rounded-md p-5">
+            <form method="POST" class="h-full flex flex-col gap-5 justify-center">
                 <span class="uppercase font-medium">Register</span>
                 {% csrf_token %}
                 {{form.as_p}}
