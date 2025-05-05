@@ -1,5 +1,6 @@
 from django import forms
 from task.models import Task,TaskDetail
+from django.contrib.auth.models import User
 
 
 
@@ -93,3 +94,7 @@ class TaskDetailModelForm(StyleFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.apply_style_widget()
 
+class UserSignupForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        form = User
+        fields = '__all__'

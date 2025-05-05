@@ -4,6 +4,7 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('task/', include("task.urls"))
+    path('task/', include("task.urls")),
+    path('user/', include('users.urls'))
     
 ]+ debug_toolbar_urls()

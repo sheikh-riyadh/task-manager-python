@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "css/output.css" %}">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="h-screen flex flex-col items-center justify-center">
+        <div class="w-3/4 h-96 shadow-lg border rounded-md p-5">
+            <form method="POST" class="h-full flex flex-col gap-5">
+                <span class="uppercase font-medium">Register</span>
+                {% csrf_token %}
+                {{form.as_p}}
+                <button class="border w-full uppercase font-medium py-1 rounded-md bg-blue-500 text-white" type="submit">Sign-up</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
