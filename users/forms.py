@@ -1,8 +1,8 @@
 
-from django.contrib.auth.models import User
-from django import forms
 import re
+from django.contrib.auth.models import User
 from task.forms import StyleFormMixin
+from django import forms
 
 
 class CustomUserRegistrationForm(StyleFormMixin, forms.ModelForm):
@@ -26,6 +26,16 @@ class CustomUserRegistrationForm(StyleFormMixin, forms.ModelForm):
             raise forms.ValidationError('Password must include at least one uppercase letter, one lowercase letter, one digit, and one special character (@#$%^&+=)')
         
         return password
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        is_email_exist = User.objects.filter(email=email)
+
+        if is_email_exist:
+            raise forms.ValidationError('Email already exist')
+        
+        return email
+    
     
     def clean(self):
         cleaned_data = super().clean()
