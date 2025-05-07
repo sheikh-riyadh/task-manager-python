@@ -41,6 +41,10 @@ class StyleFormMixin:
                 field.widget.attrs.update({
                     'class':f'{self.common_classes} w-full'
                 })
+            else:
+                field.widget.attrs.update({
+                    'class':f'{self.common_classes} w-full'
+                })
 
 
 """ Create form using model """

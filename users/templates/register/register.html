@@ -10,11 +10,22 @@
 <body>
 
     <div class="h-screen flex flex-col items-center justify-center">
-        <div class="w-2/4 h-96 shadow-lg border rounded-md p-5">
-            <form method="POST" class="h-full flex flex-col gap-5 justify-center">
+        <div class="w-2/4 shadow-lg border rounded-md p-10">
+            <form method="POST" class="h-full flex flex-col gap-2 justify-center">
                 <span class="uppercase font-medium">Register</span>
                 {% csrf_token %}
-                {{form.as_p}}
+                {% for field in form %}
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    {{field}}
+
+                    {% if field.errors %}
+                        <ul>
+                            {% for error in field.errors %}
+                                <li>{{error}}</li>
+                            {% endfor %} 
+                        </ul>
+                    {% endif %}
+                {% endfor %}
                 <button class="border w-full uppercase font-medium py-1 rounded-md bg-blue-500 text-white" type="submit">Sign-up</button>
             </form>
         </div>
