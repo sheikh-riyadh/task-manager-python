@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 # Create your models here.
 
 
@@ -65,3 +66,16 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+
+# We will notify when after task is completed this is called "post_save signal"
+@receiver(post_save, sender=Task)
+def notify_created_task(sender, instance, created, **kwargs):
+    if created:
+        instance.is_completed = True
+        instance.save()
+        print("Completed")
+
+
+@receiver(pre_save, sender=Employee)
+def notify_employee(sender, instance, **kwargs):
+    print('Get notified employee')
