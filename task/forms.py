@@ -19,6 +19,10 @@ from django.contrib.auth.models import User
 
 
 class StyleFormMixin:
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_style_widget()
 
     common_classes ="border-2 focus:outline-none px-3 py-1 rounded"
 

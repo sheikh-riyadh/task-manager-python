@@ -45,6 +45,3 @@ class CustomUserRegistrationForm(StyleFormMixin, forms.ModelForm):
         if password and confirm_password and password != confirm_password:
             self.add_error('confirm_password', "Passwords do not match, please try again")
     
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.apply_style_widget()

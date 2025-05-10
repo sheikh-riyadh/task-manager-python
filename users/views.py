@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from users.forms import CustomUserRegistrationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
 
 # Create your views here.
 def sign_up(request):
@@ -8,7 +10,11 @@ def sign_up(request):
     if request.method == 'POST':
         form = CustomUserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data.get('password'))
+            user.is_active=False
+            user.save()
+            messages.success(request, 'Please check your email for activation.')
 
     context={
         'form':form
