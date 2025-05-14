@@ -9,11 +9,15 @@
 </head>
 <body>
     <div class="h-screen flex flex-col items-center justify-center">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
         <form method="POST" class="w-80 flex flex-col gap-4 p-10 border  rounded-md">
             <span class="font-bold text-2xl text-center">Login</span>
             {% csrf_token %}
-            <input class="p-3 border rounded-md outline-none w-full" type="text" placeholder="Enter your username" name='username'>
-            <input class="p-3 border rounded-md outline-none w-full" type="password" placeholder="Enter your password" name="password">
+            {{form.as_p}}
             <button class="bg-green-500 text-white p-3 w-full" type="submit">Login</button>
         </form>
     </div>

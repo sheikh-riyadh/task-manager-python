@@ -3,7 +3,6 @@ from django.db.models.signals import post_save
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 from django.core.mail import send_mail
-from decouple import config
 from django.contrib.auth.models import User
 
 
@@ -20,5 +19,5 @@ def send_activation_email(sender, instance, created, **kwargs):
         
         try:
             send_mail(subject,message,settings.EMAIL_HOST_USER,receipient_list)
-        except Exeption as e:
+        except Exception as e:
             print(f'Fail to send email {instance.username} with {str(e)} error')

@@ -3,6 +3,8 @@ import re
 from django.contrib.auth.models import User
 from task.forms import StyleFormMixin
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
 
 
 class CustomUserRegistrationForm(StyleFormMixin, forms.ModelForm):
@@ -44,4 +46,11 @@ class CustomUserRegistrationForm(StyleFormMixin, forms.ModelForm):
 
         if password and confirm_password and password != confirm_password:
             self.add_error('confirm_password', "Passwords do not match, please try again")
+
+
+class LoginForm(StyleFormMixin,AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
     
