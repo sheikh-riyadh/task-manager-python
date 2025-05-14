@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, HttpResponse
 from users.forms import CustomUserRegistrationForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
-from users.forms import LoginForm
+from users.forms import LoginForm, AssignRoleForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 
@@ -55,3 +55,26 @@ def activate_user(request, user_id, token):
             return HttpResponse('Invalid token or id')
     except:
         return HttpResponse('User not found')
+
+
+def admin_dashboard(request):
+    users  = User.objects.all()
+    context={
+        'users' : users
+    }
+    return render(request, 'admin/dashboard.html', context)
+
+def assign_role(request, user_id):
+    form = AssignRoleForm()
+    user = User.objects.get(id=user_id)
+
+    if request.method == 'POST':
+        form = AssignRoleForm(request.POST)
+        if form.is_valid():
+            role = form.cleaned_data.get('role')
+            user.groups.clear() # Remove old group
+            user.groups.add(role)
+            messages.success(request, f'User {user.username} has been assigned to the {role.name} ')
+            return redirect('admin-dashboard')
+
+    return render(request, 'admin/assign_role.html', {'form':form})
