@@ -2,9 +2,16 @@ from django.shortcuts import render, redirect, HttpResponse
 from users.forms import CustomUserRegistrationForm
 from django.contrib.auth import login, logout
 from django.contrib import messages
-from users.forms import LoginForm, AssignRoleForm
-from django.contrib.auth.models import User
+from users.forms import LoginForm, AssignRoleForm, CreateGroupForm
+from django.contrib.auth.models import User,Group
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+
+
+
+def is_admin(user):
+    return user.groups.filter(name="Admin").exists()
 
 
 # Create your views here.
@@ -18,6 +25,7 @@ def sign_up(request):
             user.is_active=False
             user.save()
             messages.success(request, 'Please check your email for activation.')
+            return redirect('sign-in') 
 
     context={
         'form':form
@@ -37,7 +45,7 @@ def sign_in(request):
     return render(request, 'signin/signin.html', context)
 
 
-
+@login_required
 def sign_out(request):
     if request.method == "POST":
         logout(request)
@@ -56,7 +64,7 @@ def activate_user(request, user_id, token):
     except:
         return HttpResponse('User not found')
 
-
+@user_passes_test(is_admin,login_url='sign-in')
 def admin_dashboard(request):
     users  = User.objects.all()
     context={
@@ -64,6 +72,7 @@ def admin_dashboard(request):
     }
     return render(request, 'admin/dashboard.html', context)
 
+@user_passes_test(is_admin,login_url='sign-in')
 def assign_role(request, user_id):
     form = AssignRoleForm()
     user = User.objects.get(id=user_id)
@@ -78,3 +87,24 @@ def assign_role(request, user_id):
             return redirect('admin-dashboard')
 
     return render(request, 'admin/assign_role.html', {'form':form})
+
+
+@user_passes_test(is_admin,login_url='sign-in')
+def create_group(request):
+    form = CreateGroupForm()
+    if request.method == "POST":
+        form = CreateGroupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Group created successfully")
+    
+    return render(request, 'admin/create_group.html', {'form':form})
+
+@user_passes_test(is_admin,login_url='sign-in')
+def groups_list(request):
+    groups = Group.objects.all()
+    return render(request, 'admin/groups_list.html', {"groups":groups})
+
+
+
+

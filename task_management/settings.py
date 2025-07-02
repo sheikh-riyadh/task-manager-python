@@ -158,3 +158,5 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 URL = "http://127.0.0.1:8000"
+
+LOGIN_URL = 'sign-in'
