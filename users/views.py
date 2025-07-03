@@ -102,7 +102,7 @@ def create_group(request):
 
 @user_passes_test(is_admin,login_url='sign-in')
 def groups_list(request):
-    groups = Group.objects.all()
+    groups = Group.objects.prefetch_related('permissions').all()
     return render(request, 'admin/groups_list.html', {"groups":groups})
 
 

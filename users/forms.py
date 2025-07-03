@@ -62,7 +62,7 @@ class AssignRoleForm(StyleFormMixin, forms.Form):
 
 class CreateGroupForm(StyleFormMixin, forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(
-        queryset=Permission.objects.all(),
+        queryset=Permission.objects.select_related('content_type').all(),
         widget=forms.CheckboxSelectMultiple,
         label='Permissions'
     )
@@ -70,6 +70,25 @@ class CreateGroupForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Group
         fields = ['name', 'permissions']
+
+
+
+# class CreateGroupForm(StyleFormMixin, forms.ModelForm):
+#     class Meta:
+#         model = Group
+#         fields = ['name', 'permissions']
+#         widgets = {
+#             'permissions': forms.CheckboxSelectMultiple
+#         }
+#         labels = {
+#             'permissions': 'Permissions'
+#         }
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         # Optimize by eager loading related content_type for each permission
+#         self.fields['permissions'].queryset = Permission.objects.select_related('content_type').all()
+
 
 
 
