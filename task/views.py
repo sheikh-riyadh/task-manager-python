@@ -77,7 +77,7 @@ def create_task(req):
 
     if req.method == "POST":
         task_form = TaskModelForm(req.POST)
-        task_detail_form = TaskDetailModelForm(req.POST)
+        task_detail_form = TaskDetailModelForm(req.POST, req.FILES)
 
         if task_form.is_valid() and task_detail_form.is_valid():  # Ensure both forms are valid
             task = task_form.save()
