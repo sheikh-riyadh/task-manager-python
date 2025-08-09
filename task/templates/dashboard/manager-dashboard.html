@@ -21,9 +21,11 @@
         <span>
             {% if task.title|length > 15 %}
                 <div class="flex gap-5">
-                  <span title="{{ task.title }}">
+                 <a href="{% url 'task-details' task.id  %}" rel="noopener noreferrer">
+                   <span title="{{ task.title }}">
                     {{task.title|slice:"0:15"}}...
                   </span>
+                 </a>
                   <a class="block bg-green-600 text-white p-2 rounded-md text-sm font-semibold" href="{% url 'update-task' task.id %}">Update</a>
                   <form action="{% url 'delete-task' task.id %}" method="POST">
                     {% csrf_token %}

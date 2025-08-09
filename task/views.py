@@ -1,5 +1,4 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
 from task.forms import TaskModelForm,TaskDetailModelForm
 from task.models import Task, TaskDetail, Project, Employee
 from django.db.models import Q, Count
@@ -133,7 +132,6 @@ def update_task(req,id):
 def delete_task(req, id):
     if req.method=="POST":
         task = Task.objects.get(id=id)
-        print(task.title)
         task.delete()
         messages.success(req,"Deleted successfully..!")
         return redirect("manager-dashboard")
@@ -210,3 +208,20 @@ def show_tasks(req):
 
 
     return render(req, 'show_tasks.html',{"tasks":tasks, "pending_tasks":pending_tasks_data})
+
+
+@login_required
+@permission_required("tasks.view_task", login_url='no-permission')
+def task_details(request, id):
+    task = Task.objects.get(id=id)
+    status_choices = Task.STATUS_OPTIONS
+
+    if request.method == 'POST':
+        selected_status = request.POST.get('task_status')
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+
+    return render(request, 'view_task_details.html', {"task": task, 'status_choices': status_choices})
+
+    
