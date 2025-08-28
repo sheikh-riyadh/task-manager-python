@@ -1,0 +1,19 @@
+{% extends "admin/dashboard.html" %}
+{% block content %}
+<div class="h-screen flex flex-col items-center justify-center">
+    <div class="p-10 rounded-lg border shadow-md w-full">
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <span class="bg-green-600 text-white font-bold">{{message}}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <form class="flex flex-col gap-5 h-[500px] overflow-auto" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button class="bg-blue-600 p-2 text-white rounded-lg" type="submit">Create group</button>
+    </form>
+</div>
+</div>
+{% endblock content %}

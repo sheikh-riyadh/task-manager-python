@@ -1,5 +1,6 @@
 from django import forms
 from task.models import Task,TaskDetail
+from django.contrib.auth.models import User
 
 
 
@@ -18,6 +19,10 @@ from task.models import Task,TaskDetail
 
 
 class StyleFormMixin:
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_style_widget()
 
     common_classes ="border-2 focus:outline-none px-3 py-1 rounded"
 
@@ -37,6 +42,10 @@ class StyleFormMixin:
                     'class': self.common_classes
                 })
             elif isinstance(field.widget, forms.Select):
+                field.widget.attrs.update({
+                    'class':f'{self.common_classes} w-full'
+                })
+            else:
                 field.widget.attrs.update({
                     'class':f'{self.common_classes} w-full'
                 })
@@ -87,9 +96,13 @@ class TaskModelForm(StyleFormMixin, forms.ModelForm):
 class TaskDetailModelForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = TaskDetail
-        fields = ["priority", "notes"]
+        fields = ["priority", "notes", 'asset']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.apply_style_widget()
 
+class UserSignupForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        form = User
+        fields = '__all__'

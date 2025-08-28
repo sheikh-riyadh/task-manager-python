@@ -1,12 +1,23 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
 from task.forms import TaskModelForm,TaskDetailModelForm
 from task.models import Task, TaskDetail, Project, Employee
 from django.db.models import Q, Count
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test,permission_required
 
+
+
+
+
+def is_manager(user):
+    return user.groups.filter(name="Manager").exists()
+
+
+def is_employee(user):
+    return user.groups.filter(name="Employee").exists()
 
 # Create your views here.
+@user_passes_test(is_manager, login_url="sign-in")
 def manager_dashboard(req):
 
     # Get the request type
@@ -45,8 +56,8 @@ def manager_dashboard(req):
     return render(req, "dashboard/manager-dashboard.html",context)
 
 
-def user_dashboard(req):
-    
+@user_passes_test(is_employee, login_url='sign-in')
+def employee_dashboard(req):
     return render(req, "dashboard/user-dashboard.html")
 
 
@@ -57,13 +68,15 @@ def test(req):
     return render(req, "test.html", context)
 
 # Create a new task
+@login_required
+@permission_required('task.add_task')
 def create_task(req):
     task_form = TaskModelForm()
     task_detail_form = TaskDetailModelForm()
 
     if req.method == "POST":
         task_form = TaskModelForm(req.POST)
-        task_detail_form = TaskDetailModelForm(req.POST)
+        task_detail_form = TaskDetailModelForm(req.POST, req.FILES)
 
         if task_form.is_valid() and task_detail_form.is_valid():  # Ensure both forms are valid
             task = task_form.save()
@@ -83,6 +96,8 @@ def create_task(req):
     return render(req, "dashboard/task_form.html", context)
 
 # Update task which is user want
+@login_required
+@permission_required('task.change_task')
 def update_task(req,id):
     task = Task.objects.get(id=id)
     task_form = TaskModelForm(instance=task)
@@ -112,11 +127,11 @@ def update_task(req,id):
     }
     return render(req, "dashboard/task_form.html", context)
 
-
+@login_required
+@permission_required('task.delete_task')
 def delete_task(req, id):
     if req.method=="POST":
         task = Task.objects.get(id=id)
-        print(task.title)
         task.delete()
         messages.success(req,"Deleted successfully..!")
         return redirect("manager-dashboard")
@@ -125,7 +140,8 @@ def delete_task(req, id):
         return redirect("manager-dashboard")
 
 
-
+@login_required
+@permission_required('task.view_task')
 def show_tasks(req):
     # Ways of data retriving
     # ======================
@@ -192,3 +208,20 @@ def show_tasks(req):
 
 
     return render(req, 'show_tasks.html',{"tasks":tasks, "pending_tasks":pending_tasks_data})
+
+
+@login_required
+@permission_required("tasks.view_task", login_url='no-permission')
+def task_details(request, id):
+    task = Task.objects.get(id=id)
+    status_choices = Task.STATUS_OPTIONS
+
+    if request.method == 'POST':
+        selected_status = request.POST.get('task_status')
+        task.status = selected_status
+        task.save()
+        return redirect('task-details', task.id)
+
+    return render(request, 'view_task_details.html', {"task": task, 'status_choices': status_choices})
+
+    

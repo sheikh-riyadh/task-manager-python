@@ -1,0 +1,96 @@
+
+import re
+from django.contrib.auth.models import Group, User,Permission
+from task.forms import StyleFormMixin
+from django import forms
+from django.contrib.auth.forms import AuthenticationForm
+
+
+
+class CustomUserRegistrationForm(StyleFormMixin, forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'confirm_password']
+        help_texts={
+            'username':None
+        }
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=]).{8,}$'
+
+        if len(password) < 8 :
+            raise forms.ValidationError('Password must at least 8 character long')
+        
+        if not re.fullmatch(pattern, password):
+            raise forms.ValidationError('Password must include at least one uppercase letter, one lowercase letter, one digit, and one special character (@#$%^&+=)')
+        
+        return password
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        is_email_exist = User.objects.filter(email=email)
+
+        if is_email_exist:
+            raise forms.ValidationError('Email already exist')
+        
+        return email
+    
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            self.add_error('confirm_password', "Passwords do not match, please try again")
+
+
+class LoginForm(StyleFormMixin,AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+
+class AssignRoleForm(StyleFormMixin, forms.Form):
+    role = forms.ModelChoiceField(
+        queryset=Group.objects.all(),  # add the ()
+        empty_label='Select a role'
+    )
+
+class CreateGroupForm(StyleFormMixin, forms.ModelForm):
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.select_related('content_type').all(),
+        widget=forms.CheckboxSelectMultiple,
+        label='Permissions'
+    )
+
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']
+
+
+
+# class CreateGroupForm(StyleFormMixin, forms.ModelForm):
+#     class Meta:
+#         model = Group
+#         fields = ['name', 'permissions']
+#         widgets = {
+#             'permissions': forms.CheckboxSelectMultiple
+#         }
+#         labels = {
+#             'permissions': 'Permissions'
+#         }
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         # Optimize by eager loading related content_type for each permission
+#         self.fields['permissions'].queryset = Permission.objects.select_related('content_type').all()
+
+
+
+
+
+    

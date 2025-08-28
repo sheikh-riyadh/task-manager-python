@@ -22,10 +22,10 @@
                   {% endfor %}
               {% endif %}</p>
           </div>
-          <form method="POST" class="flex flex-col gap-5 w-full ">
+          <form method="POST" class="flex flex-col gap-5 w-full " enctype='multipart/form-data'>
             {% csrf_token %} 
-            {{task_form.as_p}}
-            {{task_detail_form.as_p}}
+            {{task_form}}
+            {{task_detail_form}}
             <button type="submit" class="bg-green-500 text-white px-5 py-1 rounded">Submit</button>
           </form>
         </div>

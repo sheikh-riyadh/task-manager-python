@@ -1,0 +1,12 @@
+{% extends "admin/dashboard.html" %}
+{% block content %}
+    <div class="h-screen flex flex-col items-center justify-center">
+        <div class="w-[350px] p-10 rounded-lg border shadow-md">
+        <form class="flex flex-col gap-5" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button class="bg-blue-600 p-2 text-white rounded-lg" type="submit">Submit</button>
+        </form>
+    </div>
+    </div>
+{% endblock content %}
